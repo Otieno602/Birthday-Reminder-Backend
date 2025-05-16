@@ -2,6 +2,7 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
 const User = require('../models/user');
+const nodemailer = require('nodemailer');
 
 const registration = async (req, res) => {
     try {
@@ -62,7 +63,29 @@ const recallPassword = async (req, res) => {
         user.resetTokenExpiry = Date.now() + 3600000;
         await user.save();
 
-        console.log(`Reset link: http://localhost:5000/resetPassword/${token}`);
+         const resetLink = `${process.env.FRONTEND_URL}/resetPassword/${token}`;
+
+        const transporter = nodemailer.createTransport({
+            service: 'gmail',
+            auth: {
+                user: process.env.EMAIL_USER,
+                pass: process.env.EMAIL_PASS
+            },
+        });
+
+         const mailOptions = {
+            from: `'Birthday Reminder' <${process.env.EMAIL_USER}>`,
+            to: email,
+            subject: 'Password Reset Request',
+            html: `
+                <p>Hello, ${user.name},</p>
+                <p>You requested a password reset. Click the link below to reset your password:</p>
+                <a href='${resetLink}'>${resetLink}</a>
+                <p>This link will expire in 1 hour</p>
+            `,
+        };
+
+        await transporter.sendMail(mailOptions);
 
         return res.status(200).json({ message: 'Reset link sent if email exists.' });
     } catch (error) {
