@@ -52,9 +52,12 @@ const login = async (req, res) => {
 const recallPassword = async (req, res) => {
     try {
         const { email } = req.body;
+        console.log('Received password reset request for:', email);
+
         const user = await User.findOne({ email });
 
         if (!user) {
+            console.log('User not found. Returning generic message');
             return res.status(200).json({ message: 'Reset link sent if email exists.' });
         }
 
@@ -62,8 +65,10 @@ const recallPassword = async (req, res) => {
         user.resetToken = token;
         user.resetTokenExpiry = Date.now() + 3600000;
         await user.save();
+        console.log('Token generated and saved for user:', user.email);
 
          const resetLink = `${process.env.FRONTEND_URL}/resetPassword/${token}`;
+         console.log('Reset Link:', resetLink);
 
         const transporter = nodemailer.createTransport({
             service: 'gmail',
@@ -85,7 +90,8 @@ const recallPassword = async (req, res) => {
             `,
         };
 
-        await transporter.sendMail(mailOptions);
+        const result = await transporter.sendMail(mailOptions);
+        console.log('Email sent:', result.messageId);
 
         return res.status(200).json({ message: 'Reset link sent if email exists.' });
     } catch (error) {
