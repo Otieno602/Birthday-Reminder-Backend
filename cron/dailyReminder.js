@@ -4,6 +4,8 @@ const Birthday = require('../models/Birthday');
 const User = require('../models/user');
 
 cron.schedule(process.env.CRON_SAMEDAY, async () => {
+    console.log("🎯 CRON TRIGGERED: SAMEDAY at", new Date().toISOString());
+
     console.log('📬 Running same-day birthday reminder');
 
     const now = new Date();
@@ -59,6 +61,4 @@ cron.schedule(process.env.CRON_SAMEDAY, async () => {
     } catch (err) {
         console.log('❌ Error sending same-day reminders:', err);
     }
-}, {
-    timezone: 'Africa/Nairobi'
 });

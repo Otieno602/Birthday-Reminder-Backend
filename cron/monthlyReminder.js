@@ -4,6 +4,8 @@ const Birthday = require('../models/Birthday');
 const User = require('../models/user');
 
 cron.schedule(process.env.CRON_MONTHLY,  async () => {
+    console.log("🎯 CRON TRIGGERED: MONTHLY at", new Date().toISOString());
+
     console.log('📬 Running monthly birthday reminder...');
 
     const now = new Date();
@@ -56,7 +58,5 @@ cron.schedule(process.env.CRON_MONTHLY,  async () => {
     } catch (err) {
         console.error('❌ Error fetching users:', err);
     }
-}, {
-   timezone: 'Africa/Nairobi' 
 });
 

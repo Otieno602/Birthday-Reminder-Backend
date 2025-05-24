@@ -4,6 +4,8 @@ const Birthday = require('../models/Birthday');
 const User = require('../models/user');
 
 cron3Day.schedule(process.env.CRON_3DAY, async () => {
+    console.log("🎯 CRON TRIGGERED: 3DAY at", new Date().toISOString());
+
     console.log('📬 Running 3-day birthday reminder');
 
     const now = new Date();
@@ -58,7 +60,5 @@ cron3Day.schedule(process.env.CRON_3DAY, async () => {
         }
     } catch (err) {
         console.log('❌ Error sending 3-day reminder:', err);
-    }
-}, {
-    timezone: 'Africa/Nairobi'    
+    }    
 });
