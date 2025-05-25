@@ -27,6 +27,11 @@ require('./cron/monthlyReminder');
 require('./cron/upcomingReminder');
 require('./cron/dailyReminder');
 
+// Root route to respond to uptime robot and manual checks
+app.get('/', (req, res) => {
+    res.send('🎉 Birthday Reminder Backend is running!');
+});
+
 // Start server
 app.listen(PORT, () => {
     console.log(`server running on port ${PORT}`);
